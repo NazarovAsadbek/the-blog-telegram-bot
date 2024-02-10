@@ -1,0 +1,42 @@
+{
+  "name": "the-blog-tg-bot",
+  "version": "1.0.0",
+  "description": "The blog tg bot",
+  "main": "app.js",
+  "type": "module",
+  "scripts": {
+    "start": "node src/app.js",
+    "lint": "eslint . --ext .js --fix",
+    "prepare": "husky",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "lint-staged": {
+    "*.{js,vue,ts}": [
+      "pnpm lint"
+    ]
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NazarovAsadbek/the-blog-telegram-bot.git"
+  },
+  "author": "ErgashevSardor",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/NazarovAsadbek/the-blog-telegram-bot/issues"
+  },
+  "homepage": "https://github.com/NazarovAsadbek/the-blog-telegram-bot#readme",
+  "devDependencies": {
+    "@commitlint/cli": "^18.4.4",
+    "@commitlint/config-conventional": "^18.4.4",
+    "axios": "^1.6.5",
+    "eslint": "^7.32.0 || ^8.2.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-import": "^2.25.2",
+    "lint-staged": "^15.2.0"
+  },
+  "dependencies": {
+    "dotenv": "^16.3.1",
+    "telegraf": "^4.15.3",
+    "telegraf-session-local": "^2.1.1"
+  }
+}
