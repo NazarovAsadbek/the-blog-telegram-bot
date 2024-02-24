@@ -3,6 +3,14 @@ import LocalSession from 'telegraf-session-local';
 import ConfigService from './config/config.service.js';
 import StartCommand from './commands/start.command.js';
 
+/* ToDo:
+  1. При запуске, добавить кнопку авторизации
+    1.1. Будет визард для поэтапного ввода логина и пароль
+  2. Кнопка для получение/добавление и удаления постов по id
+    2.1. Получения постов с пагинацией
+    2.2. Удаление поста по id
+    2.3. Добавление поста c предпросмотром и сабмитом или отменой
+*/
 class Bot {
   bot;
 
