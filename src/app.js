@@ -1,7 +1,8 @@
-import { Telegraf } from 'telegraf';
+import {Scenes, Telegraf} from 'telegraf';
 import LocalSession from 'telegraf-session-local';
 import ConfigService from './config/config.service.js';
 import StartCommand from './commands/start.command.js';
+import AuthorizationCommand from "./commands/authorization.command.js";
 
 /* ToDo:
   1. При запуске, добавить кнопку авторизации
@@ -21,13 +22,16 @@ class Bot {
   constructor(configService) {
     this.configService = configService;
     const botToken = this.configService.get('BOT_TOKEN');
+    const scenes = new Scenes.Stage([]);
     this.bot = new Telegraf(botToken);
     this.bot.use((new LocalSession({ database: 'tg-session-db.json' })).middleware());
+    this.bot.use(scenes.middleware())
   }
 
   init() {
     this.commands = [
       new StartCommand(this.bot, this.configService),
+      new AuthorizationCommand(this.bot, this.configService)
     ];
 
     // eslint-disable-next-line no-restricted-syntax
