@@ -7,7 +7,7 @@ class AuthorizationCommand extends Command {
 
   handle() {
     this.bot.hears('Авторизоваться', (ctx) => {
-      ctx.scene.enter('authorization_scene')
+      ctx.scene.enter('authorization_scene');
     });
   }
 }
