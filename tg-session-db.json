@@ -3,7 +3,10 @@
     {
       "id": "5683732951:5683732951",
       "data": {
-        "__scenes": {}
+        "__scenes": {
+          "current": "authorization_scene",
+          "state": {}
+        }
       }
     }
   ]
