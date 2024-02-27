@@ -1,12 +1,22 @@
 {
   "sessions": [
     {
-      "id": "5683732951:5683732951",
+      "id": "711143671:711143671",
       "data": {
         "__scenes": {
           "current": "authorization_scene",
-          "state": {}
+          "state": {
+            "username": "cskmxvlfdmlkvmfdmklvfkmldv",
+            "password": "sld;lds;lcds"
+          },
+          "cursor": 1
         }
+      }
+    },
+    {
+      "id": "5683732951:5683732951",
+      "data": {
+        "__scenes": {}
       }
     }
   ]
