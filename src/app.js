@@ -24,7 +24,7 @@ class Bot {
     this.configService = configService;
     const botToken = this.configService.get('BOT_TOKEN');
 
-    const authorizationScene = new AuthorizationScene().getScene();
+    const authorizationScene = new AuthorizationScene().getWizardScene();
 
     const scenes = new Scenes.Stage([authorizationScene]);
     this.bot = new Telegraf(botToken);

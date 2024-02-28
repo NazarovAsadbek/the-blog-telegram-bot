@@ -1,68 +1,90 @@
-import { Scenes } from 'telegraf';
 import axios from 'axios';
+import ConfigService from '../config/config.service.js';
+import { ScenesInitializer } from './comman.class.js';
 
-class AuthorizationScene {
+class AuthorizationScene extends ScenesInitializer {
   constructor() {
-    // const sceneSteps = []
-    this.sceneSteps = [
-      this.firstStep.bind(this),
-      this.secondStep.bind(this),
+    super();
+    this.configService = new ConfigService();
+    this.url = this.configService.get('API_URL');
+    this.sceneSteps = this.buildSceneSteps();
+    this.scene = this.createWizardScene('authorization_scene', this.sceneSteps);
+    this.setupOnEnterScene();
+  }
+
+  buildSceneSteps() {
+    return [
+      this.gettingStartedBotStep.bind(this),
+      this.authorizationStep.bind(this),
     ];
+  }
 
-    // const scene = []
-    this.scene = new Scenes.WizardScene(
-      'authorization_scene',
-      ...this.sceneSteps,
-    );
-
+  setupOnEnterScene() {
     this.scene.enter((ctx) => ctx.reply('Введите логин'));
   }
 
-  async firstStep(ctx) {
+  processError(ctx, error) {
+    ctx.scene.state = {};
+    ctx.reply(error);
+    return ctx.scene.leave();
+  }
+
+  buildUserFormData(state) {
+    if (!state.username) {
+      throw new Error('Поле username не передано');
+    }
+    if (!state.password) {
+      throw new Error('Поле password не передано');
+    }
+
+    return {
+      user: {
+        username: state.username,
+        email: `test${new Date().getTime()}@mail.ru`,
+        password: state.password,
+      },
+    };
+  }
+
+  gettingStartedBotStep(ctx) {
     try {
       const message = ctx?.message?.text ?? '';
       ctx.scene.state.username = message;
 
       if (message === '/start') {
         ctx.scene.state.username = null;
-        await ctx.scene.leave();
+        return ctx.scene.leave();
       }
       ctx.reply('Введите пароль');
       return ctx.wizard.next();
     } catch (e) {
-      ctx.scene.state = {};
-      ctx.reply('Упс... Произошла какая-та ошибка');
-      await ctx.scene.leave();
-      return null;
+      return this.processError(ctx, 'Упс... Произошла какая-та ошибка');
     }
   }
 
-  async secondStep(ctx) {
+  async authorizationStep(ctx) {
     try {
       const message = ctx?.message?.text ?? '';
       ctx.scene.state.password = message;
-      if (ctx.scene.state.username !== '/start' && ctx.scene.state.password !== '/start') {
-        const formData = {
-          user: {
-            username: ctx.scene.state.username,
-            email: `test${new Date().getTime()}@mail.ru`,
-            password: ctx.scene.state.password,
-          },
-        };
-        const res = await axios.post('http://155.133.23.97:3003/users', formData);
-        if (res.status < 400) {
-          ctx.reply('Вы успешно авторизировались!');
-        }
-        await ctx.scene.leave();
+
+      if (ctx.scene.state.username === '/start' && ctx.scene.state.password === '/start') {
+        ctx.scene.state.username = null;
+        ctx.scene.state.password = null;
+        return ctx.scene.leave();
       }
+
+      const formData = this.buildUserFormData(ctx.scene.state);
+      const response = await axios.post(`${this.url}/users`, formData);
+      if (response.status < 400) {
+        ctx.reply('Вы успешно авторизировались!');
+      }
+      return ctx.scene.leave();
     } catch (e) {
-      ctx.scene.state = {};
-      ctx.reply('Упс... Произошла какая-та ошибка');
-      await ctx.scene.leave();
+      return this.processError(ctx, 'Упс... Произошла какая-та ошибка');
     }
   }
 
-  getScene() {
+  getWizardScene() {
     return this.scene;
   }
 }

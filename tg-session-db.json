@@ -3,18 +3,17 @@
     {
       "id": "711143671:711143671",
       "data": {
-        "__scenes": {
-          "current": "authorization_scene",
-          "state": {
-            "username": "cskmxvlfdmlkvmfdmklvfkmldv",
-            "password": "sld;lds;lcds"
-          },
-          "cursor": 1
-        }
+        "__scenes": {}
       }
     },
     {
       "id": "5683732951:5683732951",
+      "data": {
+        "__scenes": {}
+      }
+    },
+    {
+      "id": "5673712208:5673712208",
       "data": {
         "__scenes": {}
       }
