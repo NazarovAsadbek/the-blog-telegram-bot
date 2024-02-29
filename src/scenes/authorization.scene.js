@@ -1,6 +1,7 @@
 import axios from 'axios';
 import ConfigService from '../config/config.service.js';
 import { ScenesInitializer } from './comman.class.js';
+import {Markup} from "telegraf";
 
 class AuthorizationScene extends ScenesInitializer {
   constructor() {
@@ -30,8 +31,8 @@ class AuthorizationScene extends ScenesInitializer {
   }
 
   buildUserFormData(state) {
-    if (!state.username) {
-      throw new Error('Поле username не передано');
+    if (!state.email) {
+      throw new Error('Поле email не передано');
     }
     if (!state.password) {
       throw new Error('Поле password не передано');
@@ -39,8 +40,7 @@ class AuthorizationScene extends ScenesInitializer {
 
     return {
       user: {
-        username: state.username,
-        email: `test${new Date().getTime()}@mail.ru`,
+        email: state.email,
         password: state.password,
       },
     };
@@ -49,10 +49,10 @@ class AuthorizationScene extends ScenesInitializer {
   gettingStartedBotStep(ctx) {
     try {
       const message = ctx?.message?.text ?? '';
-      ctx.scene.state.username = message;
+      ctx.scene.state.email = message;
 
       if (message === '/start') {
-        ctx.scene.state.username = null;
+        ctx.scene.state.email = null;
         return ctx.scene.leave();
       }
       ctx.reply('Введите пароль');
@@ -67,20 +67,34 @@ class AuthorizationScene extends ScenesInitializer {
       const message = ctx?.message?.text ?? '';
       ctx.scene.state.password = message;
 
-      if (ctx.scene.state.username === '/start' && ctx.scene.state.password === '/start') {
-        ctx.scene.state.username = null;
+      if (ctx.scene.state.email === '/start' && ctx.scene.state.password === '/start') {
+        ctx.scene.state.email = null;
         ctx.scene.state.password = null;
         return ctx.scene.leave();
       }
 
       const formData = this.buildUserFormData(ctx.scene.state);
-      const response = await axios.post(`${this.url}/users`, formData);
-      if (response.status < 400) {
-        ctx.reply('Вы успешно авторизировались!');
+      const response = await axios.post(`${this.url}/users/login`, formData);
+      if (response.status >= 400) {
+        return this.processError(ctx, 'Авторизация провалилась, повторите попытку!');
       }
+
+      // ToDo Реализовать функционал, чтобы кнопки распологались в 1 рядом по 2 штуки
+      if (response?.data?.user?.token) {
+        ctx.scene.state.token = response?.data?.user?.token;
+        ctx.reply('Вы успешно авторизировались!',
+            Markup.keyboard([
+              ['Получить все посты 📜'],
+              ['Получить пост по id 🔡'],
+              ['Обновить пост 🆙'],
+              ['Создать пост 🆕'],
+              ['Удалить пост ❌']
+            ]).resize());
+      }
+
       return ctx.scene.leave();
     } catch (e) {
-      return this.processError(ctx, 'Упс... Произошла какая-та ошибка');
+      return this.processError(ctx, 'Авторизация провалилась, повторите попытку!');
     }
   }
 
