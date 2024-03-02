@@ -25,17 +25,23 @@ class Bot {
     const botToken = this.configService.get('BOT_TOKEN');
 
     const authorizationScene = new AuthorizationScene().getWizardScene();
+    const createPostScene = new CreatePostScene().getWizardScene()
 
-    const scenes = new Scenes.Stage([authorizationScene]);
+    const scenes = new Scenes.Stage([authorizationScene, createPostScene]);
+
+
+
     this.bot = new Telegraf(botToken);
     this.bot.use((new LocalSession({ database: 'tg-session-db.json' })).middleware());
     this.bot.use(scenes.middleware());
   }
 
+
   init() {
     this.commands = [
       new StartCommand(this.bot, this.configService),
       new AuthorizationCommand(this.bot, this.configService),
+      new CreatePostCommand(this.bot, this.configService)
     ];
 
     // eslint-disable-next-line no-restricted-syntax

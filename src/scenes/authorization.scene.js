@@ -1,7 +1,7 @@
 import axios from 'axios';
+import { Markup } from 'telegraf';
 import ConfigService from '../config/config.service.js';
 import { ScenesInitializer } from './comman.class.js';
-import {Markup} from "telegraf";
 
 class AuthorizationScene extends ScenesInitializer {
   constructor() {
@@ -84,14 +84,11 @@ class AuthorizationScene extends ScenesInitializer {
         ctx.scene.state.token = response?.data?.user?.token;
         ctx.reply('Вы успешно авторизировались!',
             Markup.keyboard([
-              ['Получить все посты 📜'],
-              ['Получить пост по id 🔡'],
-              ['Обновить пост 🆙'],
-              ['Создать пост 🆕'],
-              ['Удалить пост ❌']
+              ['Получить все посты 📜', 'Получить пост по id 🔡'], // Первый ряд с двумя кнопками
+              ['Обновить пост 🆙', 'Создать пост 🆕'], // Второй ряд с двумя кнопками
+              ['Удалить пост ❌'] // Третий ряд с одной кнопкой
             ]).resize());
       }
-
       return ctx.scene.leave();
     } catch (e) {
       return this.processError(ctx, 'Авторизация провалилась, повторите попытку!');

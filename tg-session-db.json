@@ -9,7 +9,10 @@
     {
       "id": "5683732951:5683732951",
       "data": {
-        "__scenes": {}
+        "__scenes": {
+          "current": "create_post_scene",
+          "state": {}
+        }
       }
     },
     {
