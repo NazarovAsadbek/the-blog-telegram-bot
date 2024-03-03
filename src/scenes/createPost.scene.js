@@ -23,13 +23,14 @@ class AuthorizationScene extends ScenesInitializer {
 
   buildSceneSteps() {
     return [
-      this.gettingStartedBotStep.bind(this),
-      this.authorizationStep.bind(this),
+      this.enterPostTitle.bind(this),
+      this.enterPostDescription.bind(this),
+      this.enterPostImage.bind(this)
     ];
   }
 
   setupOnEnterScene() {
-    this.scene.enter((ctx) => ctx.reply('Создайте пост'));
+    this.scene.enter((ctx) => ctx.reply('Введите назание поста'));
   }
 
   processError(ctx, error) {
@@ -39,70 +40,76 @@ class AuthorizationScene extends ScenesInitializer {
   }
 
   buildUserFormData(state) {
-    if (!state.email) {
-      throw new Error('Поле email не передано');
+    if (!state.postTitle) {
+      throw new Error('Поле postTitle не передано');
     }
-    if (!state.password) {
-      throw new Error('Поле password не передано');
+    if (!state.postDescription) {
+      throw new Error('Поле postDescription не передано');
     }
 
     return {
       user: {
-        email: state.email,
-        password: state.password,
+        postTitle: state.postTitle,
+        postDescription: state.postDescription,
       },
     };
   }
 
-  gettingStartedBotStep(ctx) {
+  enterPostTitle(ctx) {
     try {
       const message = ctx?.message?.text ?? '';
-      ctx.scene.state.email = message;
+      ctx.scene.state.postTitle = message;
 
       if (message === '/start') {
-        ctx.scene.state.email = null;
+        ctx.scene.state.postTitle = null;
         return ctx.scene.leave();
       }
-      ctx.reply('Введите пароль');
+      console.log('1. Мы вошли в шаг enterPostTitle')
+      ctx.reply('Введите описание поста');
       return ctx.wizard.next();
     } catch (e) {
       return this.processError(ctx, 'Упс... Произошла какая-та ошибка');
     }
   }
 
-  async authorizationStep(ctx) {
+  async enterPostDescription(ctx) {
     try {
       const message = ctx?.message?.text ?? '';
-      ctx.scene.state.password = message;
+      ctx.scene.state.postDescription = message;
 
-      if (ctx.scene.state.email === '/start' && ctx.scene.state.password === '/start') {
-        ctx.scene.state.email = null;
-        ctx.scene.state.password = null;
+      if (ctx.scene.state.postTitle === '/start' && ctx.scene.state.postDescription === '/start') {
+        ctx.scene.state.postTitle = null;
+        ctx.scene.state.postDescription = null;
         return ctx.scene.leave();
       }
-
-      const formData = this.buildUserFormData(ctx.scene.state);
-      const response = await axios.post(`${this.url}/users/login`, formData);
-      if (response.status >= 400) {
-        return this.processError(ctx, 'Авторизация провалилась, повторите попытку!');
-      }
-
-      if (response?.data?.user?.token) {
-        ctx.scene.state.token = response?.data?.user?.token;
-        ctx.reply(
-          'Вы успешно авторизировались!',
-          Markup.keyboard([
-            ['Получить все посты 📜', 'Получить пост по id 🔡'], // Первый ряд с двумя кнопками
-            ['Обновить пост 🆙', 'Создать пост 🆕'], // Второй ряд с двумя кнопками
-            ['Удалить пост ❌'], // Третий ряд с одной кнопкой
-          ]).resize(),
-        );
-      }
-      return ctx.scene.leave();
+      console.log('2. Мы вошли в шаг enterPostDescription')
+      ctx.reply('Введите ссылку фотографии поста');
+      return ctx.wizard.next();
     } catch (e) {
       return this.processError(ctx, 'Авторизация провалилась, повторите попытку!');
     }
   }
+
+  async enterPostImage(ctx) {
+    try {
+      const message = ctx?.message?.text ?? '';
+      ctx.scene.state.postImage = message;
+
+      if (ctx.scene.state?.postTitle === '/start' && ctx.scene.state?.postDescription === '/start' && ctx.scene.state?.postImage === '/start') {
+        ctx.scene.state.postTitle = null;
+        ctx.scene.state.postDescription = null;
+        ctx.scene.state.postImage = null;
+        return ctx.scene.leave();
+      }
+
+      console.log('3. Мы вошли в шаг enterPostImage')
+      ctx.reply('Preview поста');
+      return ctx.wizard.next();
+    } catch (e) {
+      return this.processError(ctx, 'Авторизация провалилась, повторите попытку!');
+    }
+  }
+
 
   getWizardScene() {
     return this.scene;

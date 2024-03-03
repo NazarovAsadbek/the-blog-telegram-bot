@@ -20,6 +20,20 @@
       "data": {
         "__scenes": {}
       }
+    },
+    {
+      "id": "6607537265:6607537265",
+      "data": {
+        "__scenes": {
+          "current": "create_post_scene",
+          "state": {
+            "postTitle": "teghdvhjdshj",
+            "postDescription": "shacvhvjshhcahs",
+            "postImage": "sdjbksjkcjncsk"
+          },
+          "cursor": 3
+        }
+      }
     }
   ]
 }
