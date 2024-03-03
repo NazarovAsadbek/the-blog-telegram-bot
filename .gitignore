@@ -1,5 +1,7 @@
 /dist
 /node_modules
 /report
+.husky
 .env
 example_db.json
+tg-session-db.json
