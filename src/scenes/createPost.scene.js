@@ -1,5 +1,3 @@
-import axios from 'axios';
-import { Markup } from 'telegraf';
 import ConfigService from '../config/config.service.js';
 import { ScenesInitializer } from './comman.class.js';
 
@@ -64,7 +62,7 @@ class AuthorizationScene extends ScenesInitializer {
         ctx.scene.state.postTitle = null;
         return ctx.scene.leave();
       }
-      console.log('1. Мы вошли в шаг enterPostTitle')
+
       ctx.reply('Введите описание поста');
       return ctx.wizard.next();
     } catch (e) {
@@ -82,7 +80,7 @@ class AuthorizationScene extends ScenesInitializer {
         ctx.scene.state.postDescription = null;
         return ctx.scene.leave();
       }
-      console.log('2. Мы вошли в шаг enterPostDescription')
+
       ctx.reply('Введите ссылку фотографии поста');
       return ctx.wizard.next();
     } catch (e) {
@@ -102,7 +100,6 @@ class AuthorizationScene extends ScenesInitializer {
         return ctx.scene.leave();
       }
 
-      console.log('3. Мы вошли в шаг enterPostImage')
       ctx.reply('Preview поста');
       return ctx.wizard.next();
     } catch (e) {
